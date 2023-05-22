@@ -3,7 +3,6 @@ from threading import Thread, Lock
 import math
 
 EPS = 1e-07
-q = Queue()
 
 
 def sum(x, q):
@@ -26,6 +25,8 @@ def func_y(x, q):
 
 if __name__ == '__main__':
     lock = Lock()
+    q = Queue()
+
     x = math.pi / 3
     t1 = Thread(target=sum, args=(x, q))
     t2 = Thread(target=func_y, args=(x, q))
