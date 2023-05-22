@@ -4,27 +4,28 @@ import math
 
 EPS = 1e-07
 q = Queue()
-lock = Lock()
 
-
-def sum(x = math.pi / 3):
-    lock.acquire()
+def sum(x,q):
     n, summa, temp = 1, 1.0, 0
     while abs(summa - temp) > EPS:
         temp = summa
-        summa += math.sin(n*x)/n
+        summa += math.sin(n * x) / n
         n += 1
+    with lock:
         q.put(summa)
-    lock.release()
 
 
-def func_y(x):
-    result = (math.pi - x) / 2
-    print(result)
+def func_y(x,q):
+    summa = q.get()
+    rez = (math.pi - x) / 2
 
+    print(f"Sum is {summa}")
+    print(f"Check: {rez}")
 
 if __name__ == '__main__':
-    t1 = Thread(target=sum).start()
-    t2 = Thread(target=func_y(q.get())).start()
-
-
+    lock = Lock()
+    x = math.pi / 3
+    t1 = Thread(target=sum,args=(x, q))
+    t2 = Thread(target=func_y,args=(x, q))
+    t1.start()
+    t2.start()
